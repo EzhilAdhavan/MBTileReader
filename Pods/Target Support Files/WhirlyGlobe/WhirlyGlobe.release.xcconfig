@@ -1,0 +1,19 @@
+CLANG_WARN_DOCUMENTATION_COMMENTS = NO
+CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
+CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/WhirlyGlobe
+DEFINES_MODULE = YES
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FMDB" "${PODS_CONFIGURATION_BUILD_DIR}/KissXML" "${PODS_CONFIGURATION_BUILD_DIR}/SMCalloutView" "${PODS_CONFIGURATION_BUILD_DIR}/libjson" "${PODS_CONFIGURATION_BUILD_DIR}/proj4"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 __USE_SDL_GLES__ __IPHONEOS__ SQLITE_OPEN_READONLY HAVE_PTHREAD=1 LODEPNG_NO_COMPILE_ENCODER LODEPNG_NO_COMPILE_DISK LODEPNG_NO_COMPILE_ANCILLARY_CHUNKS LODEPNG_NO_COMPILE_ERROR_TEXT LODEPNG_NO_COMPILE_CRC LODEPNG_NO_COMPILE_CPP
+GCC_WARN_INHIBIT_ALL_WARNINGS = YES
+HEADER_SEARCH_PATHS = $(inherited) "$(SDKROOT)/usr/include/libxml2" "$(PODS_ROOT)/KissXML/KissXML/" "${PODS_TARGET_SRCROOT}/common/local_libs/eigen/" "${PODS_TARGET_SRCROOT}/common/local_libs/nanopb/" "${PODS_TARGET_SRCROOT}/common/local_libs/clipper" "${PODS_TARGET_SRCROOT}/common/local_libs/lodepng" "${PODS_TARGET_SRCROOT}/common/local_libs/glues/include/" "${PODS_TARGET_SRCROOT}/common/local_libs/GeographicLib/include/" "${PODS_TARGET_SRCROOT}/ios/library/WhirlyGlobe-MaplyComponent/include/private/" "${PODS_TARGET_SRCROOT}/ios/library/WhirlyGlobe-MaplyComponent/include/" "${PODS_TARGET_SRCROOT}/ios/library/WhirlyGlobe-MaplyComponent/include/vector_tiles/"
+MTL_LANGUAGE_REVISION = Metal21
+OTHER_LDFLAGS = $(inherited) -l"c++" -l"sqlite3" -l"xml2" -l"z" -framework "Accelerate" -framework "CFNetwork" -framework "CoreLocation" -framework "CoreServices" -framework "FMDB" -framework "KissXML" -framework "MetalKit" -framework "MetalPerformanceShaders" -framework "SMCalloutView" -framework "SystemConfiguration" -framework "UIKit" -framework "libjson" -framework "proj4"
+PODS_BUILD_DIR = ${BUILD_DIR}
+PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_ROOT = ${SRCROOT}
+PODS_TARGET_SRCROOT = ${PODS_ROOT}/WhirlyGlobe
+PODS_XCFRAMEWORKS_BUILD_DIR = $(PODS_CONFIGURATION_BUILD_DIR)/XCFrameworkIntermediates
+PRODUCT_BUNDLE_IDENTIFIER = org.cocoapods.${PRODUCT_NAME:rfc1034identifier}
+SKIP_INSTALL = YES
+SYSTEM_HEADER_SEARCH_PATHS =
+USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES

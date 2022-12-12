@@ -1,0 +1,129 @@
+{
+  "name": "WhirlyGlobe",
+  "version": "3.5",
+  "summary": "WhirlyGlobe-Maply: Geospatial visualization for iOS and Android.",
+  "description": "WhirlyGlobe-Maply is a high performance geospatial display toolkit for iOS and Android.\nThe iOS version supports big, complex apps like Dark Sky and National Geographic World Atlas,\namong others.  Even so, it's easy to get started on your own project.",
+  "homepage": "https://github.com/mousebird/WhirlyGlobe",
+  "license": "Apache 2.0",
+  "authors": {
+    "Steve Gifford": "contact@mousebirdconsulting.com"
+  },
+  "social_media_url": "https://twitter.com/@mousebirdc",
+  "platforms": {
+    "ios": "12.0"
+  },
+  "requires_arc": true,
+  "source": {
+    "git": "https://github.com/mousebird/WhirlyGlobe.git",
+    "branch": "topic/xcframework"
+  },
+  "module_name": "WhirlyGlobe",
+  "default_subspecs": "WhirlyGlobe",
+  "compiler_flags": "",
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "MTL_LANGUAGE_REVISION": "Metal21",
+    "GCC_PREPROCESSOR_DEFINITIONS": "__USE_SDL_GLES__ __IPHONEOS__ SQLITE_OPEN_READONLY HAVE_PTHREAD=1 LODEPNG_NO_COMPILE_ENCODER LODEPNG_NO_COMPILE_DISK LODEPNG_NO_COMPILE_ANCILLARY_CHUNKS LODEPNG_NO_COMPILE_ERROR_TEXT LODEPNG_NO_COMPILE_CRC LODEPNG_NO_COMPILE_CPP",
+    "HEADER_SEARCH_PATHS": "\"$(SDKROOT)/usr/include/libxml2\" \"$(PODS_ROOT)/KissXML/KissXML/\" \"${PODS_TARGET_SRCROOT}/common/local_libs/eigen/\" \"${PODS_TARGET_SRCROOT}/common/local_libs/nanopb/\" \"${PODS_TARGET_SRCROOT}/common/local_libs/clipper\" \"${PODS_TARGET_SRCROOT}/common/local_libs/lodepng\" \"${PODS_TARGET_SRCROOT}/common/local_libs/glues/include/\" \"${PODS_TARGET_SRCROOT}/common/local_libs/GeographicLib/include/\" \"${PODS_TARGET_SRCROOT}/ios/library/WhirlyGlobe-MaplyComponent/include/private/\" \"${PODS_TARGET_SRCROOT}/ios/library/WhirlyGlobe-MaplyComponent/include/\" \"${PODS_TARGET_SRCROOT}/ios/library/WhirlyGlobe-MaplyComponent/include/vector_tiles/\"",
+    "SYSTEM_HEADER_SEARCH_PATHS": "",
+    "CLANG_WARN_DOCUMENTATION_COMMENTS": "NO",
+    "GCC_WARN_INHIBIT_ALL_WARNINGS": "YES"
+  },
+  "subspecs": [
+    {
+      "name": "locallibs",
+      "source_files": [
+        "common/local_libs/aaplus/**/*.{h,cpp}",
+        "common/local_libs/clipper/cpp/*.{cpp,hpp}",
+        "common/local_libs/shapefile/**/*.{c,h}",
+        "common/local_libs/lodepng/*.{cpp,h}",
+        "common/local_libs/nanopb/*.{c,h}",
+        "common/local_libs/GeographicLib/src/*.cpp",
+        "common/local_libs/GeographicLib/include/GeographicLib/*.{h,hpp}"
+      ],
+      "preserve_paths": [
+        "common/local_libs/eigen/Eigen/**",
+        "common/local_libs/lodepng/*.h",
+        "common/local_libs/nanopb/*.h",
+        "common/local_libs/GeographicLib/include/GeographicLib/*.{h,hpp}"
+      ],
+      "private_header_files": [
+        "common/local_libs/aaplus/**/*.h",
+        "common/local_libs/clipper/cpp/*.hpp",
+        "common/local_libs/shapefile/**/*.h",
+        "common/local_libs/nanopb/*.h",
+        "common/local_libs/GeographicLib/include/GeographicLib/*.{h,hpp}"
+      ]
+    },
+    {
+      "name": "glues",
+      "source_files": "common/local_libs/glues/**/*.{cpp,h}",
+      "private_header_files": "common/local_libs/glues/**/*.h"
+    },
+    {
+      "name": "WhirlyGlobe",
+      "source_files": [
+        "common/WhirlyGlobeLib/src/*.{c,cpp}",
+        "common/WhirlyGlobeLib/include/*.h",
+        "ios/library/WhirlyGlobeLib/src/*.{mm,m,cpp,metal}",
+        "ios/library/WhirlyGlobeLib/include/*.h",
+        "ios/library/WhirlyGlobe-MaplyComponent/include/**/*.h",
+        "ios/library/WhirlyGlobe-MaplyComponent/src/**/*.{mm,m,cpp,metal}",
+        "ios/library/WhirlyGlobe-MaplyComponent/WhirlyGlobeMaplyComponent/*.h"
+      ],
+      "exclude_files": [
+        "common/WhirlyGlobeLib/src/*GLES.{h,cpp}",
+        "ios/library/WhirlyGlobeLib/src/Texture_iOS.mm",
+        "ios/library/WhirlyGlobeLib/include/TextureGLES_iOS.h"
+      ],
+      "public_header_files": [
+        "ios/library/WhirlyGlobe-MaplyComponent/include/**/*.h",
+        "ios/library/WhirlyGlobe-MaplyComponent/WhirlyGlobeMaplyComponent/*.h"
+      ],
+      "private_header_files": [
+        "common/WhirlyGlobeLib/include/**/*.h",
+        "ios/library/WhirlyGlobeLib/include/*.h",
+        "ios/library/WhirlyGlobe-MaplyComponent/include/private/*.h"
+      ],
+      "dependencies": {
+        "WhirlyGlobe/locallibs": [
+
+        ],
+        "WhirlyGlobe/glues": [
+
+        ],
+        "SMCalloutView": [
+
+        ],
+        "FMDB": [
+
+        ],
+        "libjson": [
+
+        ],
+        "KissXML": [
+
+        ],
+        "proj4": [
+
+        ]
+      },
+      "libraries": [
+        "z",
+        "xml2",
+        "c++",
+        "sqlite3"
+      ],
+      "frameworks": [
+        "CoreLocation",
+        "CoreServices",
+        "SystemConfiguration",
+        "CFNetwork",
+        "UIKit",
+        "Accelerate",
+        "MetalKit",
+        "MetalPerformanceShaders"
+      ]
+    }
+  ]
+}

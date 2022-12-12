@@ -1,0 +1,196 @@
+/* MaplyVectorStyleC.h
+*  WhirlyGlobe-MaplyComponent
+*
+*  Created by Steve Gifford on 4/9/20.
+*  Copyright 2011-2022 mousebird consulting
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
+#import "VectorObject.h"
+#import "MapboxVectorTileParser.h"
+#import <string>
+
+namespace WhirlyKit
+{
+
+/**
+ Settings that control how vector tiles look in relation to their styles.
+  
+ These are set based on the sort of device we're on, particularly retina vs. non-retina.  They can be manipulated directly as well for your needs.
+ 
+ This is the object backing the ObjC and Android versions.
+ */
+struct VectorStyleSettingsImpl
+{
+    VectorStyleSettingsImpl(float scale);
+
+    /// Local renderer scale (iOS only)
+    float rendererScale = 1.0f;
+    /// Line widths will be scaled by this amount before display.
+    float lineScale = 1.0f;
+    /// Text sizes will be scaled by this amount before display.
+    float textScale = 1.0f;
+    /// Markers (symbols+circles) will be scaled by this amount before display.
+    float markerScale = 1.0f;
+    /// Circles will be scaled by this amount before display.
+    float circleScale = 1.0f;
+    /// Symbols will be scaled by this amount before display.
+    float symbolScale = 1.0f;
+    /// Importance for markers in the layout engine
+    float markerImportance = 2.0f;
+    /// Default marker size when none is specified
+    float markerSize = 10.0f;
+    /// Importance for labels in the layout engine
+    float labelImportance = 1.5f;
+
+    /// For symbols we'll try to pull a UUID out of this field to stick in the marker and label uniqueID
+    std::string uuidField;
+
+    /// Draw priority calculated as offset from here
+    int baseDrawPriority = 0;
+
+    /// Offset between levels
+    int drawPriorityPerLevel = 0;
+
+    /**
+        The overall map scale calculations will be scaled by this amount.
+
+        We use the map scale calculations to figure out what is dispalyed and when.  Not what to load in, mind you,
+        that's a separate, but related calculation.  This controls the scaling of those calculations.  Scale it down to
+        load things in later, up to load them in sooner.
+      */
+    float mapScaleScale = 1.0f;
+
+    /// Dashed lines will be scaled by this amount before display.
+    float dashPatternScale = 1.0f;
+
+    /// Where we're using old vectors (e.g. not wide) scale them by this amount
+    float oldVecWidthScale = 1.0f;
+
+    /// If we're using widened vectors, only activate them for strokes wider than this.  Defaults to zero.
+    float wideVecCuttoff = 0.0f;
+
+    /// If set, this is the shader we'll use on the areal features.
+    std::string arealShaderName;
+
+    /// If set we'll use the zoom levels defined in the style
+    bool useZoomLevels = false;
+
+    /// Use widened vectors (which do anti-aliasing and such)
+    bool useWideVectors = true;
+
+    /// Use GPU-based wide vector implementation (iOS/Metal only)
+    bool perfWideVec = true;
+
+    /// If set, we'll make all the features selectable.  If not, we won't.
+    bool selectable = false;
+
+    // Allow color attributes on individual vector objects to override layer styles
+    bool enableOverrideColor = false;
+
+    /// Read from the z buffer (fill)
+    bool zBufferRead = false;
+
+    /// Write to the z buffer (fill)
+    bool zBufferWrite = false;
+
+    /// If set, icons will be loaded from this directory
+    std::string iconDirectory;
+
+    /// The default font family for all text
+    std::string fontName;
+    
+    /// If we're using a dfiferent areal shader, set it up here
+    SimpleIdentity settingsArealShaderID = EmptyIdentity;
+};
+typedef std::shared_ptr<VectorStyleSettingsImpl> VectorStyleSettingsImplRef;
+
+class VectorStyleImpl;
+typedef std::shared_ptr<VectorStyleImpl> VectorStyleImplRef;
+
+/**
+    Base class for styling vectors.  This is set up to manage the styles.
+*/
+class VectorStyleDelegateImpl
+{
+public:
+    VectorStyleDelegateImpl() = default;
+    virtual ~VectorStyleDelegateImpl() = default;
+
+    /// Return the styles that apply to the given feature (attributes).
+    virtual std::vector<VectorStyleImplRef> stylesForFeature(PlatformThreadInfo *inst,
+                                                             const Dictionary &attrs,
+                                                             const QuadTreeIdentifier &tileID,
+                                                             const std::string &layerName) = 0;
+    
+    /// Return true if the given layer is meant to display for the given tile (zoom level)
+    virtual bool layerShouldDisplay(PlatformThreadInfo *inst,
+                                    const std::string &name,
+                                    const QuadTreeNew::Node &tileID) = 0;
+
+    /// Return the style associated with the given UUID.
+    virtual VectorStyleImplRef styleForUUID(PlatformThreadInfo *inst,long long uuid) = 0;
+
+    /// Return a list of all the styles in no particular order.  Needed for categories and indexing
+    virtual std::vector<VectorStyleImplRef> allStyles(PlatformThreadInfo *inst) = 0;
+
+    /// Return the style entry for the background, if any
+    virtual VectorStyleImplRef backgroundStyle(PlatformThreadInfo *inst) const = 0;
+
+    /// Return the background color for a given zoom level
+    virtual RGBAColorRef backgroundColor(PlatformThreadInfo *inst,double zoom) = 0;
+
+    /// Get the zoom slot, or -1
+    virtual int getZoomSlot() const { return -1; }
+
+    /// Capture the zoom slot if you're going use it
+    virtual void setZoomSlot(int zoomSlot) { }
+};
+typedef std::shared_ptr<VectorStyleDelegateImpl> VectorStyleDelegateImplRef;
+
+/**
+ Base class for an individual vector style (also called a layer).
+ */
+class VectorStyleImpl
+{
+public:
+    VectorStyleImpl() = default;
+    virtual ~VectorStyleImpl() = default;
+
+    virtual std::string getIdent() const { return std::string(); }
+    virtual std::string getType() const { return std::string(); }
+    virtual std::string getLegendText(float zoom) const { return std::string(); }
+    virtual RGBAColor getLegendColor(float zoom) const { return RGBAColor::clear(); }
+    virtual std::string getRepresentation() const { return std::string(); }
+
+    /// Unique Identifier for this style
+    virtual long long getUuid(PlatformThreadInfo *inst) = 0;
+    
+    /// Category used for sorting
+    virtual std::string getCategory(PlatformThreadInfo *inst) = 0;
+
+    // Note: This no longer really holds
+    /// Set if this geometry is additive (e.g. sticks around) rather than replacement
+    virtual bool geomAdditive(PlatformThreadInfo *inst) = 0;
+
+    using CancelFunction = std::function<bool(PlatformThreadInfo *)>;
+
+    /// Construct objects related to this style based on the input data.
+    virtual void buildObjects(PlatformThreadInfo *inst,
+                              const std::vector<VectorObjectRef> &vecObjs,
+                              const VectorTileDataRef &tileInfo,
+                              const Dictionary *desc,
+                              const CancelFunction &cancelFn) = 0;
+};
+
+}
