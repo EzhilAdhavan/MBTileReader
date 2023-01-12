@@ -55,7 +55,7 @@ class MapViewController: UIViewController, WhirlyGlobeViewControllerDelegate, Ma
         theViewC!.view.frame = self.view.bounds
         addChild(theViewC!)
         
-        theViewC!.frameInterval = 2
+        //theViewC!.frameInterval = 2
         mbTilesFetcher = MaplyMBTileFetcher(mbTiles: selectedFileItem == nil ? "countries" : selectedFileItem?.name ?? "")
         
         let samplingParams = MaplySamplingParams()
@@ -65,18 +65,28 @@ class MapViewController: UIViewController, WhirlyGlobeViewControllerDelegate, Ma
         samplingParams.minZoom = mbTilesFetcher!.minZoom()
         samplingParams.maxZoom = mbTilesFetcher!.maxZoom()
         samplingParams.singleLevel = true
-        samplingParams.minImportance = 512*512
-        
-        imageLoader = MaplyQuadImageLoader(params: samplingParams,
-                                           tileInfo: mbTilesFetcher!.tileInfo(),
-                                           viewC: theViewC!)
-        imageLoader!.setTileFetcher(mbTilesFetcher!)
-        imageLoader!.baseDrawPriority = Constants.MapLayerPriority.baseMapDrawPriority
-        
+        if mbTilesFetcher?.format == "pbf" {
+            let alert = UIAlertController(title: "Not supported", message: "pbf, not supoorted.", preferredStyle: .alert)
+            
+            self.present(alert, animated: true)
+            return
+        } else {
+            samplingParams.minImportance = 512*512
+            imageLoader = MaplyQuadImageLoader(params: samplingParams,
+                                               tileInfo: mbTilesFetcher!.tileInfo(),
+                                               viewC: theViewC!)
+            imageLoader!.setTileFetcher(mbTilesFetcher!)
+            imageLoader!.baseDrawPriority = Constants.MapLayerPriority.baseMapDrawPriority
+        }
         // 77.253749, 10.575718 - UDT
         // -85.9189498, 37.7088262, ekpc
         // -83.910534, 34.319422, Spring Dale
         // -83.9157023424918 34.31748303740376
+        
+        self.setupMapSettings()
+    }
+    
+    func setupMapSettings() {
         let deg = MaplyCoordinateMakeWithDegrees(Float(self.selectedLocation?.longitude ?? 0.0), Float(self.selectedLocation?.latitude ?? 0.0))
         if let globeVC = theViewC as? WhirlyGlobeViewController {
             globeVC.height = 0.05
