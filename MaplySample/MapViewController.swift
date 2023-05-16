@@ -66,8 +66,10 @@ class MapViewController: UIViewController, WhirlyGlobeViewControllerDelegate, Ma
         samplingParams.maxZoom = mbTilesFetcher!.maxZoom()
         samplingParams.singleLevel = true
         if mbTilesFetcher?.format == "pbf" {
-            let alert = UIAlertController(title: "Not supported", message: "pbf, not supoorted.", preferredStyle: .alert)
-            
+            let alert = UIAlertController(title: "Not supported", message: "pbf, not supported.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: { _ in
+                self.dismiss(animated: true)
+            }))
             self.present(alert, animated: true)
             return
         } else {
